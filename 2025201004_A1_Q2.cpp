@@ -212,7 +212,6 @@ int main()
         if(type==1)
         {
             // Spell check
-            // cout<<spellCheck(t)<<endl;
             output.push_back(to_string(spellCheck(t)));
 
         }
@@ -223,7 +222,6 @@ int main()
             output.push_back(to_string(results.size()));
             for(string &w : results)
             {
-                //cout << w << endl;
                 output.push_back(w);
             }
 
@@ -232,11 +230,9 @@ int main()
         {
             // Autocorrect
             vector <string> results=autocorrect(t);
-            //cout<<results.size()<<endl;
             output.push_back(to_string(results.size()));
             for(string &w : results)
             {
-                //cout<<w<<endl;
                 output.push_back(w);
             }
         }
