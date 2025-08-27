@@ -1,5 +1,6 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <cstring>
 using namespace cv;
 
 
@@ -227,19 +228,58 @@ int main()
     Mat result=carveVertical(img,W);
     result=carveHorizontal(result,H);
 
-    // Finding the last '/' to separate folder from filename
-    size_t slash=path.find_last_of("/\\");
-    std::string folder=(slash==std::string::npos) ? "" : path.substr(0,slash+1);
-    std::string filename=(slash==std::string::npos) ? path : path.substr(slash+1);
+    // Convert std::string path (input) to C-string for processing
+    char cpath[512];
+    strncpy(cpath, path.c_str(), sizeof(cpath));
+    cpath[sizeof(cpath)-1]='\0';  // ensure null termination
 
-    // Finding last '.' for extension
-    size_t dot=filename.find_last_of(".");
-    std::string name=(dot==std::string::npos) ? filename : filename.substr(0,dot);
-    std::string ext=(dot==std::string::npos) ? "" : filename.substr(dot);
-    std::string outPath=folder+name+"_resized"+ext;
+    // Buffers for parts
+    char folder[512], filename[256], name[256], ext[64];
 
+    // 1. Find last slash
+    const char* slash=strrchr(cpath, '/');
+    #ifdef _WIN32
+        if(!slash)
+        {
+            slash=strrchr(cpath, '\\'); // also handle Windows paths
+        }
+    #endif
+
+    if(slash)
+    {
+        size_t folderLen=slash-cpath+1;  // include '/'
+        strncpy(folder, cpath, folderLen);
+        folder[folderLen]='\0';
+        strcpy(filename, slash+1);
+    }
+    else
+    {
+        strcpy(folder, "");
+        strcpy(filename, cpath);
+    }
+
+    // 2. Find last dot
+    const char* dot=strrchr(filename, '.');
+    if(dot)
+    {
+        size_t nameLen=dot-filename;
+        strncpy(name, filename, nameLen);
+        name[nameLen]='\0';
+        strcpy(ext, dot);
+    }
+    else
+    {
+        strcpy(name, filename);
+        strcpy(ext, "");
+    }
+
+    // 3. Build output path = folder + name + "_resized" + ext
+    char outPath[1024];
+    snprintf(outPath, sizeof(outPath), "%s%s_resized%s", folder, name, ext);
+
+    // Save
     imwrite(outPath, result);
-    std::cout << "Saved resized image as: " << outPath << std::endl;
+    std::cout<<"Saved resized image as: "<<outPath<<std::endl;
 
     return 0;
 }
