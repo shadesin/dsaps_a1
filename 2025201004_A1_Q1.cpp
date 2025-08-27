@@ -165,6 +165,8 @@ Mat carveVertical(const Mat& img, int targetW)
     Mat result=img.clone();
     int total=result.cols-targetW;
 
+    std::cout << "Vertical seam carving progress:" << std::endl;
+
     for(int removed=0;removed<total;removed++)
     {
         Mat energy=calculateEnergy(result);
@@ -184,6 +186,8 @@ Mat carveHorizontal(Mat& img, int targetH)
 {
     Mat result=img.clone();
     int total=result.rows-targetH; //number of seams to remove
+
+    std::cout << "Horizontal seam carving progress: " << std::endl;
 
     for(int removed=0;removed<total;removed++)
     {
