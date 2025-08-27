@@ -3,26 +3,6 @@
 using namespace cv;
 
 
-/*
-int main() {
-    std::string path;
-    std::cout << "Enter image path: ";
-    std::cin >> path;
-
-    Mat img = imread(path);
-    if (img.empty()) {
-        std::cerr << "Error: Could not load image at " << path << std::endl;
-        return 1;
-    }
-
-    std::cout << "Loaded image: " << img.cols << "x" << img.rows << std::endl;
-
-    return 0;
-}  
-
-*/
-
-
 // Helper function for printing progress bar
 void printProgress(int current, int total)
 {
